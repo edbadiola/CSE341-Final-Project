@@ -1,8 +1,7 @@
 const mongodb = require("../data/database");
 const ObjectId = require("mongodb").ObjectId;
 
-// GET all contacts
-const getAll = async (req, res) => {
+const getAll = async (req, res, next) => {
   //#swagger.tags = ['Contacts']
   try {
     const result = await mongodb
@@ -10,17 +9,15 @@ const getAll = async (req, res) => {
       .db()
       .collection("contacts")
       .find();
-    result.toArray().then((contacts) => {
-      res.setHeader("Content-Type", "application/json");
-      res.status(200).json(contacts);
-    });
+    const contacts = await result.toArray();
+    res.setHeader("Content-Type", "application/json");
+    res.status(200).json(contacts);
   } catch (error) {
-    res.status(500).json({ message: "Error retrieving contacts", error });
+    next(error); // Passes error to centralized error handler
   }
 };
 
-// GET single contact
-const getSingle = async (req, res) => {
+const getSingle = async (req, res, next) => {
   //#swagger.tags = ['Contacts']
   try {
     const contactId = new ObjectId(req.params.id);
@@ -29,25 +26,28 @@ const getSingle = async (req, res) => {
       .db()
       .collection("contacts")
       .find({ _id: contactId });
+    const contacts = await result.toArray();
 
-    result.toArray().then((contacts) => {
-      res.setHeader("Content-Type", "application/json");
-      res.status(200).json(contacts[0]);
-    });
+    if (!contacts[0]) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+
+    res.setHeader("Content-Type", "application/json");
+    res.status(200).json(contacts[0]);
   } catch (err) {
-    res.status(500).json({ message: "Error retrieving contact", error: err });
+    next(err);
   }
 };
 
-// CREATE contact
-const createContact = async (req, res) => {
+const createContact = async (req, res, next) => {
   //#swagger.tags = ['Contacts']
   const contact = {
     firstName: req.body.firstName,
     lastName: req.body.lastName,
-    email: req.body.email,
+    age: req.body.age,
+    cityAddress: req.body.cityAddress,
     favoriteColor: req.body.favoriteColor,
-    birthday: req.body.birthday,
+    email: req.body.email,
   };
 
   try {
@@ -56,28 +56,27 @@ const createContact = async (req, res) => {
       .db()
       .collection("contacts")
       .insertOne(contact);
-
     if (response.acknowledged) {
       res.status(201).json({ message: "Contact created successfully" });
     } else {
       res.status(500).json({ message: "Failed to create contact" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Error creating contact", error });
+    next(error);
   }
 };
 
-// UPDATE contact
-const updateContact = async (req, res) => {
+const updateContact = async (req, res, next) => {
   //#swagger.tags = ['Contacts']
   try {
     const contactId = new ObjectId(req.params.id);
     const contact = {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
-      email: req.body.email,
+      age: req.body.age,
+      cityAddress: req.body.cityAddress,
       favoriteColor: req.body.favoriteColor,
-      birthday: req.body.birthday,
+      email: req.body.email,
     };
 
     const response = await mongodb
@@ -92,12 +91,11 @@ const updateContact = async (req, res) => {
       res.status(404).json({ message: "Contact not found or not modified" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Error updating contact", error });
+    next(error);
   }
 };
 
-// DELETE contact
-const deleteContact = async (req, res) => {
+const deleteContact = async (req, res, next) => {
   //#swagger.tags = ['Contacts']
   try {
     const contactId = new ObjectId(req.params.id);
@@ -113,7 +111,7 @@ const deleteContact = async (req, res) => {
       res.status(404).json({ message: "Contact not found" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Error deleting contact", error });
+    next(error);
   }
 };
 
