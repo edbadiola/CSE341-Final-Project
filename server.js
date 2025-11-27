@@ -7,7 +7,6 @@ const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
-// CORS headers
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -24,12 +23,14 @@ app.use((req, res, next) => {
 // Routes
 app.use("/", require("./routes"));
 
-// 404 handler (must be after all routes)
+
+// error handlers
+// This catches any request that didn’t match a defined route.
 app.use((req, res, next) => {
   res.status(404).json({ message: "Route not found" });
 });
 
-// Global error handler (must be last)
+// This catches any thrown errors or errors passed to next(err).
 app.use((err, req, res, next) => {
   console.error(err.stack); // log error
   res.status(500).json({

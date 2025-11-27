@@ -1,7 +1,6 @@
 const { body, validationResult } = require("express-validator");
 
 const validateContact = [
-  // REQUIRED fields first
   body("firstName").notEmpty().withMessage("First name is required"),
   body("lastName").notEmpty().withMessage("Last name is required"),
   body("email")
@@ -10,7 +9,6 @@ const validateContact = [
     .isEmail()
     .withMessage("Invalid email"),
 
-  // OPTIONAL fields
   body("age")
     .optional()
     .isInt({ min: 0 })
@@ -24,7 +22,6 @@ const validateContact = [
     .isString()
     .withMessage("Favorite color must be a string"),
 
-  // Middleware to check for validation errors
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

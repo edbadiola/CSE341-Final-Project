@@ -13,7 +13,7 @@ const getAll = async (req, res, next) => {
     res.setHeader("Content-Type", "application/json");
     res.status(200).json(contacts);
   } catch (error) {
-    next(error); // Passes error to centralized error handler
+    next(error); 
   }
 };
 
