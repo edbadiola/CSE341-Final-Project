@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongodb = require("./data/database");
@@ -53,14 +57,12 @@ passport.use(
   )
 );
 
-
 passport.serializeUser((user, done) => {
   done(null, user);
 });
 passport.deserializeUser((user, done) => {
   done(null, user);
 });
-
 
 app.get("/", (req, res) => {
   res.send(
@@ -81,8 +83,6 @@ app.get(
     res.redirect("/");
   }
 );
-
-
 
 // error handlers
 // This catches any request that didn’t match a defined route.
