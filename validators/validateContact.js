@@ -8,7 +8,6 @@ const validateContact = [
     .withMessage("Email is required")
     .isEmail()
     .withMessage("Invalid email"),
-
   body("age")
     .optional()
     .isInt({ min: 0 })
@@ -21,7 +20,6 @@ const validateContact = [
     .optional()
     .isString()
     .withMessage("Favorite color must be a string"),
-
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

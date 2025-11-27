@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Users API",
-    "description": "API for managing contacts",
+    "description": "API for managing contacts and activities",
     "version": "1.0.0"
   },
   "host": "cse341-project-2-fn1v.onrender.com",
@@ -74,12 +74,7 @@
         "description": "Get a single contact by ID",
         "produces": ["application/json"],
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
+          { "name": "id", "in": "path", "required": true, "type": "string" }
         ],
         "responses": {
           "200": { "description": "OK" },
@@ -92,12 +87,7 @@
         "description": "Update an existing contact",
         "consumes": ["application/json"],
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
+          { "name": "id", "in": "path", "required": true, "type": "string" },
           {
             "in": "body",
             "name": "body",
@@ -146,16 +136,115 @@
         "tags": ["Contacts"],
         "description": "Delete a contact by ID",
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
+          { "name": "id", "in": "path", "required": true, "type": "string" }
         ],
         "responses": {
           "204": { "description": "Contact deleted successfully" },
           "404": { "description": "Contact not found" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/activities/": {
+      "get": {
+        "tags": ["Activities"],
+        "description": "Get all activities",
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "OK" },
+          "500": { "description": "Internal Server Error" }
+        }
+      },
+      "post": {
+        "tags": ["Activities"],
+        "description": "Create a new activity",
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Activity object to create",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "description": { "type": "string" },
+                "date": { "type": "string", "format": "date" },
+                "time": { "type": "string", "format": "time" },
+                "participants": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              },
+              "required": ["title"]
+            }
+          }
+        ],
+        "responses": {
+          "201": { "description": "Activity created successfully" },
+          "400": { "description": "Validation error" },
+          "500": { "description": "Internal Server Error" }
+        }
+      }
+    },
+    "/activities/{id}": {
+      "get": {
+        "tags": ["Activities"],
+        "description": "Get a single activity by ID",
+        "produces": ["application/json"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "404": { "description": "Activity not found" },
+          "500": { "description": "Internal Server Error" }
+        }
+      },
+      "put": {
+        "tags": ["Activities"],
+        "description": "Update an existing activity",
+        "consumes": ["application/json"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Activity object to update",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "description": { "type": "string" },
+                "date": { "type": "string", "format": "date" },
+                "time": { "type": "string", "format": "time" },
+                "participants": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              },
+              "required": ["title"]
+            }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Activity updated successfully" },
+          "400": { "description": "Validation error" },
+          "404": { "description": "Activity not found" },
+          "500": { "description": "Internal Server Error" }
+        }
+      },
+      "delete": {
+        "tags": ["Activities"],
+        "description": "Delete an activity by ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "204": { "description": "Activity deleted successfully" },
+          "404": { "description": "Activity not found" },
           "500": { "description": "Internal Server Error" }
         }
       }

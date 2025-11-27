@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const contactsController = require("../controllers/users");
-const validateContact = require("../validators/validateContact"); 
+const validateContact = require("../validators/validateContact");
 
 // GET all contacts
 router.get("/", contactsController.getAll);
