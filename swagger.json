@@ -226,10 +226,12 @@
     "/reviews": {
       "get": {
         "tags": ["Reviews"],
+        "description": "Get all reviews",
         "responses": { "200": { "description": "OK" } }
       },
       "post": {
         "tags": ["Reviews"],
+        "description": "Create new review",
         "parameters": [
           {
             "in": "body",
@@ -253,10 +255,12 @@
     "/reviews/{id}": {
       "get": {
         "tags": ["Reviews"],
+        "description": "Get review by id",
         "parameters": [{ "name": "id", "in": "path" }]
       },
       "put": {
         "tags": ["Reviews"],
+        "description": "Update review info",
         "parameters": [
           { "name": "id", "in": "path" },
           { "in": "body", "schema": { "type": "object" } }
@@ -265,6 +269,7 @@
       },
       "delete": {
         "tags": ["Reviews"],
+        "description": "Delete Review by id",
         "parameters": [{ "name": "id", "in": "path" }],
         "responses": { "204": { "description": "Deleted" } }
       }
