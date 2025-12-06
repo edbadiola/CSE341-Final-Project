@@ -2,14 +2,31 @@
   "swagger": "2.0",
   "info": {
     "title": "Movie Review API",
-    "description": "API for Movies, Genres, Users and Reviews",
+    "description": "API for managing Movies, Genres, Users, and Reviews. Supports CRUD operations for each resource and allows users to submit reviews for movies.",
     "version": "1.0.0"
   },
   "host": "cse341-final-project-cuyn.onrender.com",
   "basePath": "/",
   "schemes": ["https"],
+  "tags": [
+    {
+      "name": "Movies",
+      "description": "Operations related to movies including create, read, update, and delete."
+    },
+    {
+      "name": "Genres",
+      "description": "Operations related to movie genres including create, read, update, and delete."
+    },
+    {
+      "name": "Users",
+      "description": "Operations for managing users including create, read, update, and delete."
+    },
+    {
+      "name": "Reviews",
+      "description": "Operations for movie reviews including create, read, update, and delete."
+    }
+  ],
   "paths": {
-   
     "/movies": {
       "get": {
         "tags": ["Movies"],
@@ -31,17 +48,15 @@
             "schema": {
               "type": "object",
               "properties": {
-                "title": { "type": "string" },
-                "year": { "type": "integer" },
-                "director": { "type": "string" },
+                "title": { "type": "string", "minLength": 1 },
+                "year": { "type": "integer", "minimum": 1888 },
+                "director": { "type": "string", "minLength": 1 },
                 "genre": {
                   "type": "array",
-                  "items": { "type": "string" }
+                  "items": { "type": "string" },
+                  "minItems": 1
                 },
-                "key-words": {
-                  "type": "array",
-                  "items": { "type": "string" }
-                }
+                "key-words": { "type": "array", "items": { "type": "string" } }
               },
               "required": ["title", "year"]
             }
@@ -53,7 +68,6 @@
         }
       }
     },
-
     "/movies/{id}": {
       "get": {
         "tags": ["Movies"],
@@ -78,10 +92,14 @@
             "schema": {
               "type": "object",
               "properties": {
-                "title": { "type": "string" },
-                "year": { "type": "integer" },
-                "director": { "type": "string" },
-                "genre": { "type": "array", "items": { "type": "string" } },
+                "title": { "type": "string", "minLength": 1 },
+                "year": { "type": "integer", "minimum": 1888 },
+                "director": { "type": "string", "minLength": 1 },
+                "genre": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "minItems": 1
+                },
                 "key-words": { "type": "array", "items": { "type": "string" } }
               }
             }
@@ -104,7 +122,6 @@
         }
       }
     },
-
     "/genres": {
       "get": {
         "tags": ["Genres"],
@@ -121,21 +138,23 @@
             "required": true,
             "schema": {
               "type": "object",
-              "properties": { "name": { "type": "string" } },
+              "properties": { "name": { "type": "string", "minLength": 1 } },
               "required": ["name"]
             }
           }
         ],
-        "responses": { "201": { "description": "Genre created" } }
+        "responses": {
+          "201": { "description": "Genre created" },
+          "400": { "description": "Validation Error" }
+        }
       }
     },
-
     "/genres/{id}": {
       "get": {
         "tags": ["Genres"],
         "description": "Get genre by ID",
         "parameters": [
-          { "name": "id", "in": "path", "type": "string", "required": true }
+          { "name": "id", "in": "path", "required": true, "type": "string" }
         ],
         "responses": {
           "200": { "description": "OK" },
@@ -146,16 +165,20 @@
         "tags": ["Genres"],
         "description": "Update genre",
         "parameters": [
-          { "name": "id", "in": "path", "type": "string", "required": true },
+          { "name": "id", "in": "path", "required": true, "type": "string" },
           {
             "in": "body",
             "schema": {
               "type": "object",
-              "properties": { "name": { "type": "string" } }
+              "properties": { "name": { "type": "string", "minLength": 1 } },
+              "required": ["name"]
             }
           }
         ],
-        "responses": { "204": { "description": "Updated" } }
+        "responses": {
+          "204": { "description": "Updated" },
+          "400": { "description": "Validation Error" }
+        }
       },
       "delete": {
         "tags": ["Genres"],
@@ -163,8 +186,6 @@
         "responses": { "204": { "description": "Deleted" } }
       }
     },
-
-    
     "/users": {
       "get": {
         "tags": ["Users"],
@@ -179,50 +200,59 @@
             "schema": {
               "type": "object",
               "properties": {
-                "userId": { "type": "number" },
-                "username": { "type": "string" },
-                "email": { "type": "string" },
-                "password": { "type": "string" }
-              }
+                "userId": { "type": "integer", "minimum": 1 },
+                "username": { "type": "string", "minLength": 3 },
+                "email": { "type": "string", "format": "email" },
+                "password": { "type": "string", "minLength": 6 }
+              },
+              "required": ["username", "email", "password"]
             }
           }
         ],
-        "responses": { "201": { "description": "User created" } }
+        "responses": {
+          "201": { "description": "User created" },
+          "400": { "description": "Validation Error" }
+        }
       }
     },
-
     "/users/{id}": {
       "get": {
         "tags": ["Users"],
-        "parameters": [{ "name": "id", "in": "path", "type": "string" }],
-        "responses": { "200": { "description": "User found" } }
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": { "description": "User found" },
+          "404": { "description": "User not found" }
+        }
       },
       "put": {
         "tags": ["Users"],
         "parameters": [
-          { "name": "id", "in": "path", "type": "string" },
+          { "name": "id", "in": "path", "required": true, "type": "string" },
           {
             "in": "body",
             "schema": {
               "type": "object",
               "properties": {
-                "username": { "type": "string" },
-                "email": { "type": "string" },
-                "password": { "type": "string" }
+                "username": { "type": "string", "minLength": 3 },
+                "email": { "type": "string", "format": "email" },
+                "password": { "type": "string", "minLength": 6 }
               }
             }
           }
         ],
-        "responses": { "204": { "description": "Updated" } }
+        "responses": {
+          "204": { "description": "Updated" },
+          "400": { "description": "Validation Error" }
+        }
       },
       "delete": {
         "tags": ["Users"],
-        "parameters": [{ "name": "id", "in": "path" }],
+        "parameters": [{ "name": "id", "in": "path", "required": true }],
         "responses": { "204": { "description": "Deleted" } }
       }
     },
-
-
     "/reviews": {
       "get": {
         "tags": ["Reviews"],
@@ -238,39 +268,72 @@
             "schema": {
               "type": "object",
               "properties": {
-                "movieTitle": { "type": "string" },
-                "username": { "type": "string" },
-                "shortReview": { "type": "string" },
-                "rating": { "type": "number" },
+                "movieTitle": { "type": "string", "minLength": 1 },
+                "username": { "type": "string", "minLength": 1 },
+                "shortReview": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "rating": { "type": "number", "minimum": 0, "maximum": 10 },
+                "wouldRecommend": { "type": "boolean" },
+                "favorite": { "type": "boolean" }
+              },
+              "required": ["movieTitle", "username", "shortReview", "rating"]
+            }
+          }
+        ],
+        "responses": {
+          "201": { "description": "Review added" },
+          "400": { "description": "Validation Error" }
+        }
+      }
+    },
+    "/reviews/{id}": {
+      "get": {
+        "tags": ["Reviews"],
+        "description": "Get review by id",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": { "description": "Review found" },
+          "404": { "description": "Review not found" }
+        }
+      },
+      "put": {
+        "tags": ["Reviews"],
+        "description": "Update review info",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" },
+          {
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "movieTitle": { "type": "string", "minLength": 1 },
+                "username": { "type": "string", "minLength": 1 },
+                "shortReview": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "rating": { "type": "number", "minimum": 0, "maximum": 10 },
                 "wouldRecommend": { "type": "boolean" },
                 "favorite": { "type": "boolean" }
               }
             }
           }
         ],
-        "responses": { "201": { "description": "Review added" } }
-      }
-    },
-
-    "/reviews/{id}": {
-      "get": {
-        "tags": ["Reviews"],
-        "description": "Get review by id",
-        "parameters": [{ "name": "id", "in": "path" }]
-      },
-      "put": {
-        "tags": ["Reviews"],
-        "description": "Update review info",
-        "parameters": [
-          { "name": "id", "in": "path" },
-          { "in": "body", "schema": { "type": "object" } }
-        ],
-        "responses": { "204": { "description": "Updated" } }
+        "responses": {
+          "204": { "description": "Updated" },
+          "400": { "description": "Validation Error" }
+        }
       },
       "delete": {
         "tags": ["Reviews"],
         "description": "Delete Review by id",
-        "parameters": [{ "name": "id", "in": "path" }],
+        "parameters": [{ "name": "id", "in": "path", "required": true }],
         "responses": { "204": { "description": "Deleted" } }
       }
     }
