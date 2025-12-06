@@ -8,24 +8,7 @@
   "host": "cse341-final-project-cuyn.onrender.com",
   "basePath": "/",
   "schemes": ["https"],
-  "tags": [
-    {
-      "name": "Movies",
-      "description": "Operations related to movies including create, read, update, and delete."
-    },
-    {
-      "name": "Genres",
-      "description": "Operations related to movie genres including create, read, update, and delete."
-    },
-    {
-      "name": "Users",
-      "description": "Operations for managing users including create, read, update, and delete."
-    },
-    {
-      "name": "Reviews",
-      "description": "Operations for movie reviews including create, read, update, and delete."
-    }
-  ],
+  
   "paths": {
     "/movies": {
       "get": {
