@@ -85,28 +85,6 @@ const updateMovie = async (req, res, next) => {
       res.status(404).json({ message: "Movie not found or not modified" });
     }
   } catch (error) {
-    next(error);
-  }
-};
-
-const deleteMovie = async (req, res, next) => {
-  //#swagger.tags = ['Movies']
-  try {
-    const movieId = new ObjectId(req.params.id);
-    const response = await mongodb
-      .getDatabase()
-      .db()
-      .collection("Movies")
-      .deleteOne({ _id: movieId });
-
-    if (response.deletedCount > 0) {
-      res.status(204).send();
-    } else {
-      res.status(404).json({ message: "Movie not found" });
-    }
-  } catch (error) {
-    next(error);
-  }
 };
 
 module.exports = {
