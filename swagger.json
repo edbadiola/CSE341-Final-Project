@@ -5,7 +5,7 @@
     "description": "API for Movies, Genres, Users and Reviews",
     "version": "1.0.0"
   },
-  "host": "https://cse341-project-2-fn1v.onrender.com/",
+  "host": "https://cse341-final-project-cuyn.onrender.com",
   "basePath": "/",
   "schemes": ["https"],
   "paths": {
