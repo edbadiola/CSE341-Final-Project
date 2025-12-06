@@ -38,7 +38,6 @@ const getSingleUser = async (req, res, next) => {
 const createUser = async (req, res, next) => {
   //#swagger.tags = ['Users']
   const user = {
-    userId: req.body.userId,
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
@@ -65,7 +64,6 @@ const updateUser = async (req, res, next) => {
   try {
     const userId = new ObjectId(req.params.id);
     const user = {
-      userId: req.body.userId,
       username: req.body.username,
       email: req.body.email,
       password: req.body.password,
