@@ -1,24 +1,22 @@
 const express = require("express");
 const router = express.Router();
 
-const contactsController = require("../controllers/users");
-//const validateContact = require("../validators/validateContact");
+const usersController = require("../controllers/Users");
 const { isAuthenticated } = require("../middleware/authenticate");
 
-// GET all contacts
-router.get("/", contactsController.getAll);
+// GET all users
+router.get("/", usersController.getAllUsers);
 
-// GET single contact
-router.get("/:id", contactsController.getSingle);
+// GET single user
+router.get("/:id", usersController.getSingleUser);
 
-// POST new contact 
-router.post("/", isAuthenticated, contactsController.createContact);
+// POST new user
+router.post("/", isAuthenticated, usersController.createUser);
 
-// PUT update contact 
-router.put(
-  "/:id", isAuthenticated, contactsController.updateContact);
+// PUT update user
+router.put("/:id", isAuthenticated, usersController.updateUser);
 
-// DELETE contact
-router.delete("/:id", isAuthenticated, contactsController.deleteContact);
+// DELETE user
+router.delete("/:id", isAuthenticated, usersController.deleteUser);
 
 module.exports = router;

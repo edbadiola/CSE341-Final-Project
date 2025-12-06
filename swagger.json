@@ -1,252 +1,272 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "User API",
-    "description": "API for managing contacts and activities",
+    "title": "Movie Review API",
+    "description": "API for Movies, Genres, Users and Reviews",
     "version": "1.0.0"
   },
-  "host": "cse341-project-2-fn1v.onrender.com", 
+  "host": "https://cse341-project-2-fn1v.onrender.com/",
   "basePath": "/",
   "schemes": ["https"],
   "paths": {
-    "/users/": {
+   
+    "/movies": {
       "get": {
-        "tags": ["Contacts"],
-        "description": "Get all contacts",
+        "tags": ["Movies"],
+        "description": "Get all movies",
         "produces": ["application/json"],
         "responses": {
-          "200": { "description": "OK" },
+          "200": { "description": "Movies retrieved" },
           "500": { "description": "Internal Server Error" }
         }
       },
       "post": {
-        "tags": ["Contacts"],
-        "description": "Create a new contact",
-        "consumes": ["application/json"],
+        "tags": ["Movies"],
+        "description": "Create a new movie",
         "parameters": [
           {
             "in": "body",
-            "name": "body",
-            "description": "Contact object to create",
+            "name": "movie",
             "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "firstName": { "type": "string" },
-                "lastName": { "type": "string" },
-                "email": { "type": "string" },
-                "age": { "type": "integer" },
-                "cityAddress": { "type": "string" },
-                "favoriteColor": { "type": "string" }
+                "title": { "type": "string" },
+                "year": { "type": "integer" },
+                "director": { "type": "string" },
+                "genre": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "key-words": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
               },
-              "required": ["firstName", "lastName", "email"]
+              "required": ["title", "year"]
             }
           }
         ],
         "responses": {
-          "201": { "description": "Contact created successfully" },
-          "400": {
-            "description": "Validation error",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "errors": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "msg": { "type": "string" },
-                      "param": { "type": "string" },
-                      "location": { "type": "string" }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": { "description": "Internal Server Error" }
+          "201": { "description": "Movie created" },
+          "400": { "description": "Validation Error" }
         }
       }
     },
+
+    "/movies/{id}": {
+      "get": {
+        "tags": ["Movies"],
+        "description": "Get movie by ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "200": { "description": "Movie found" },
+          "404": { "description": "Movie not found" }
+        }
+      },
+      "put": {
+        "tags": ["Movies"],
+        "description": "Update movie",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" },
+          {
+            "in": "body",
+            "name": "movie",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "year": { "type": "integer" },
+                "director": { "type": "string" },
+                "genre": { "type": "array", "items": { "type": "string" } },
+                "key-words": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Updated successfully" },
+          "404": { "description": "Movie not found" }
+        }
+      },
+      "delete": {
+        "tags": ["Movies"],
+        "description": "Delete movie by ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "string" }
+        ],
+        "responses": {
+          "204": { "description": "Movie deleted" },
+          "404": { "description": "Movie not found" }
+        }
+      }
+    },
+
+    "/genres": {
+      "get": {
+        "tags": ["Genres"],
+        "description": "Get all genres",
+        "responses": { "200": { "description": "OK" } }
+      },
+      "post": {
+        "tags": ["Genres"],
+        "description": "Create new genre",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "genre",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": { "name": { "type": "string" } },
+              "required": ["name"]
+            }
+          }
+        ],
+        "responses": { "201": { "description": "Genre created" } }
+      }
+    },
+
+    "/genres/{id}": {
+      "get": {
+        "tags": ["Genres"],
+        "description": "Get genre by ID",
+        "parameters": [
+          { "name": "id", "in": "path", "type": "string", "required": true }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "404": { "description": "Not found" }
+        }
+      },
+      "put": {
+        "tags": ["Genres"],
+        "description": "Update genre",
+        "parameters": [
+          { "name": "id", "in": "path", "type": "string", "required": true },
+          {
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": { "name": { "type": "string" } }
+            }
+          }
+        ],
+        "responses": { "204": { "description": "Updated" } }
+      },
+      "delete": {
+        "tags": ["Genres"],
+        "parameters": [{ "name": "id", "in": "path", "required": true }],
+        "responses": { "204": { "description": "Deleted" } }
+      }
+    },
+
+    
+    "/users": {
+      "get": {
+        "tags": ["Users"],
+        "responses": { "200": { "description": "OK" } }
+      },
+      "post": {
+        "tags": ["Users"],
+        "description": "Create user",
+        "parameters": [
+          {
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": { "type": "number" },
+                "username": { "type": "string" },
+                "email": { "type": "string" },
+                "password": { "type": "string" }
+              }
+            }
+          }
+        ],
+        "responses": { "201": { "description": "User created" } }
+      }
+    },
+
     "/users/{id}": {
       "get": {
-        "tags": ["Contacts"],
-        "description": "Get a single contact by ID",
-        "produces": ["application/json"],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "type": "string" }
-        ],
-        "responses": {
-          "200": { "description": "OK" },
-          "404": { "description": "Contact not found" },
-          "500": { "description": "Internal Server Error" }
-        }
+        "tags": ["Users"],
+        "parameters": [{ "name": "id", "in": "path", "type": "string" }],
+        "responses": { "200": { "description": "User found" } }
       },
       "put": {
-        "tags": ["Contacts"],
-        "description": "Update an existing contact",
-        "consumes": ["application/json"],
+        "tags": ["Users"],
         "parameters": [
-          { "name": "id", "in": "path", "required": true, "type": "string" },
+          { "name": "id", "in": "path", "type": "string" },
           {
             "in": "body",
-            "name": "body",
-            "description": "Contact object to update",
-            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "firstName": { "type": "string" },
-                "lastName": { "type": "string" },
+                "username": { "type": "string" },
                 "email": { "type": "string" },
-                "age": { "type": "integer" },
-                "cityAddress": { "type": "string" },
-                "favoriteColor": { "type": "string" }
-              },
-              "required": ["firstName", "lastName", "email"]
-            }
-          }
-        ],
-        "responses": {
-          "204": { "description": "Contact updated successfully" },
-          "400": {
-            "description": "Validation error",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "errors": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "msg": { "type": "string" },
-                      "param": { "type": "string" },
-                      "location": { "type": "string" }
-                    }
-                  }
-                }
+                "password": { "type": "string" }
               }
             }
-          },
-          "404": { "description": "Contact not found" },
-          "500": { "description": "Internal Server Error" }
-        }
+          }
+        ],
+        "responses": { "204": { "description": "Updated" } }
       },
       "delete": {
-        "tags": ["Contacts"],
-        "description": "Delete a contact by ID",
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "type": "string" }
-        ],
-        "responses": {
-          "204": { "description": "Contact deleted successfully" },
-          "404": { "description": "Contact not found" },
-          "500": { "description": "Internal Server Error" }
-        }
+        "tags": ["Users"],
+        "parameters": [{ "name": "id", "in": "path" }],
+        "responses": { "204": { "description": "Deleted" } }
       }
     },
-    "/activities/": {
+
+
+    "/reviews": {
       "get": {
-        "tags": ["Activities"],
-        "description": "Get all activities",
-        "produces": ["application/json"],
-        "responses": {
-          "200": { "description": "OK" },
-          "500": { "description": "Internal Server Error" }
-        }
+        "tags": ["Reviews"],
+        "responses": { "200": { "description": "OK" } }
       },
       "post": {
-        "tags": ["Activities"],
-        "description": "Create a new activity",
-        "consumes": ["application/json"],
+        "tags": ["Reviews"],
         "parameters": [
           {
             "in": "body",
-            "name": "body",
-            "description": "Activity object to create",
-            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "title": { "type": "string" },
-                "description": { "type": "string" },
-                "date": { "type": "string", "format": "date" },
-                "time": { "type": "string", "format": "time" },
-                "participants": {
-                  "type": "array",
-                  "items": { "type": "string" }
-                }
-              },
-              "required": ["title"]
+                "movieTitle": { "type": "string" },
+                "username": { "type": "string" },
+                "shortReview": { "type": "string" },
+                "rating": { "type": "number" },
+                "wouldRecommend": { "type": "boolean" },
+                "favorite": { "type": "boolean" }
+              }
             }
           }
         ],
-        "responses": {
-          "201": { "description": "Activity created successfully" },
-          "400": { "description": "Validation error" },
-          "500": { "description": "Internal Server Error" }
-        }
+        "responses": { "201": { "description": "Review added" } }
       }
     },
-    "/activities/{id}": {
+
+    "/reviews/{id}": {
       "get": {
-        "tags": ["Activities"],
-        "description": "Get a single activity by ID",
-        "produces": ["application/json"],
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "type": "string" }
-        ],
-        "responses": {
-          "200": { "description": "OK" },
-          "404": { "description": "Activity not found" },
-          "500": { "description": "Internal Server Error" }
-        }
+        "tags": ["Reviews"],
+        "parameters": [{ "name": "id", "in": "path" }]
       },
       "put": {
-        "tags": ["Activities"],
-        "description": "Update an existing activity",
-        "consumes": ["application/json"],
+        "tags": ["Reviews"],
         "parameters": [
-          { "name": "id", "in": "path", "required": true, "type": "string" },
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Activity object to update",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "title": { "type": "string" },
-                "description": { "type": "string" },
-                "date": { "type": "string", "format": "date" },
-                "time": { "type": "string", "format": "time" },
-                "participants": {
-                  "type": "array",
-                  "items": { "type": "string" }
-                }
-              },
-              "required": ["title"]
-            }
-          }
+          { "name": "id", "in": "path" },
+          { "in": "body", "schema": { "type": "object" } }
         ],
-        "responses": {
-          "204": { "description": "Activity updated successfully" },
-          "400": { "description": "Validation error" },
-          "404": { "description": "Activity not found" },
-          "500": { "description": "Internal Server Error" }
-        }
+        "responses": { "204": { "description": "Updated" } }
       },
       "delete": {
-        "tags": ["Activities"],
-        "description": "Delete an activity by ID",
-        "parameters": [
-          { "name": "id", "in": "path", "required": true, "type": "string" }
-        ],
-        "responses": {
-          "204": { "description": "Activity deleted successfully" },
-          "404": { "description": "Activity not found" },
-          "500": { "description": "Internal Server Error" }
-        }
+        "tags": ["Reviews"],
+        "parameters": [{ "name": "id", "in": "path" }],
+        "responses": { "204": { "description": "Deleted" } }
       }
     }
   }
