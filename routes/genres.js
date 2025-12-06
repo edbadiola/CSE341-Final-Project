@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const genresController = require("../controllers/Genres");
+const genresController = require("../controllers/genres");
 const { isAuthenticated } = require("../middleware/authenticate");
 
 // GET all genres

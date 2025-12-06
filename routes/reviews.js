@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const reviewsController = require("../controllers/Reviews");
+const reviewsController = require("../controllers/reviews");
 const { isAuthenticated } = require("../middleware/authenticate");
 
 // GET all reviews
